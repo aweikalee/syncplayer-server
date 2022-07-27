@@ -1,0 +1,9 @@
+{
+  "name": "syncplayer-server",
+  "version": "1.0.0",
+  "author": "aweikalee",
+  "license": "MIT",
+  "dependencies": {
+    "socket.io": "^4.5.1"
+  }
+}
