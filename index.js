@@ -1,11 +1,14 @@
 const createServer = require('http').createServer
 const Server = require('socket.io').Server
+const danmuMiddleware = require('./src/danmu')
 
 const PORT = 4000
 
 const httpServer = createServer()
-const io = new Server(httpServer, {})
 
+danmuMiddleware(httpServer)
+
+const io = new Server(httpServer, {})
 io.on('connection', (socket) => {
   console.log(`[connection] ${socket.id} ${socket.conn.remoteAddress}`)
 
