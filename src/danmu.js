@@ -1,6 +1,5 @@
 const url = require('url')
 const fetch = require('node-fetch')
-const { xml2js } = require('xml-js')
 
 async function getBilibiliDanmuUrl(value) {
   if (!value) return
@@ -14,28 +13,14 @@ async function getBilibiliDanmuUrl(value) {
 
 async function getBilibiliDanmu(url) {
   const response = await fetch(url)
-  const data = await response.text()
-  const json = xml2js(data, { compact: true })
-  return JSON.stringify({
-    code: 0,
-    data: json?.i?.d?.map((d) => {
-      const p = d._attributes?.p?.split?.(',')
-      let type = 0
-      if (p[1] === '4') {
-        type = 2
-      } else if (p[1] === '5') {
-        type = 1
-      }
-      return [parseFloat(p[0]), type, parseInt(p[3]), p[6], d._text]
-    }),
-  })
+  return await response.text()
 }
 
 function danmuMiddleware(httpServer) {
   httpServer.on('request', async (req, res) => {
     function end() {
-      res.writeHead(200, { 'Content-Type': 'application/json' })
-      res.end('{}')
+      res.writeHead(200, { 'Content-Type': 'application/xml' })
+      res.end('')
     }
     if (req.method !== 'GET') return end()
 
@@ -51,7 +36,7 @@ function danmuMiddleware(httpServer) {
     try {
       const data = await getBilibiliDanmu(targetUrl)
 
-      res.writeHead(200, { 'Content-Type': 'application/json' })
+      res.writeHead(200, { 'Content-Type': 'application/xml' })
       res.end(data)
     } catch (error) {
       res.writeHead(500)
