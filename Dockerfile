@@ -2,7 +2,7 @@ FROM node:14-alpine
 
 WORKDIR /app
 COPY package.json .
-COPY package-lock.json .
+RUN npm config set registry http://mirrors.cloud.tencent.com/npm/
 RUN npm install
 
 CMD node index.js
